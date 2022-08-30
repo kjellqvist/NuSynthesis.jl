@@ -1,4 +1,6 @@
 @info "Loading packages"
+using Pkg
+Pkg.activate(".")
 using NuSynthesis
 using Statistics
 using Plots
@@ -78,10 +80,10 @@ end
 #normalized1 = d[.6][:, 2:end]./d[1][:, 1] .-1 .+ 1e-8
 #plot(normalized1', label = false, linecolor = :blue, alpha = 0.1, yaxis = :log)
 ## iterations until epsilon
-maxN = 8
+maxN = 3
 Nas = 2 .^(1:maxN)
-Niter = 10000
-Nexps = 100
+Niter = 10
+Nexps = 10
 θs = Vector(0.2:0.1:.9)
 
 @info "running experiments with" maxN Niter Nexps θs
@@ -119,7 +121,7 @@ end
 savefig(p, "fix_tol_e-3.png")
 
 ## Fix Na, vary epsilon
-Na = 2^7
+Na = 2^2
 p = plot(yaxis = "N", xaxis = "tolerance", color_palette = palette(:Blues_9), size = (600, 400))
 plot!(xaxis = :log, xflip = true, legend = :topleft)
 

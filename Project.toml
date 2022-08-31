@@ -15,6 +15,9 @@ MosekTools = "1ec41992-ff65-5c91-ac43-2df89e9693a4"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
+[compat]
+Plots = "1"
+
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 

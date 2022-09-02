@@ -1,6 +1,6 @@
 using NuSynthesis
 using Documenter
-
+ENV["GKSwstype"] = "100"
 DocMeta.setdocmeta!(NuSynthesis, :DocTestSetup, :(using NuSynthesis); recursive=true)
 
 makedocs(;
@@ -14,7 +14,9 @@ makedocs(;
         assets=String[],
     ),
     pages=[
-        "Home" => "index.md",
+        "Home" => "intro.md",
+	"Examples" => "examples.md",
+	"API" => "index.md"
     ],
 )
 

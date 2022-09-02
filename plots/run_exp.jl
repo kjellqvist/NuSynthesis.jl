@@ -4,9 +4,9 @@ using NuSynthesis
 using JLD
 using Dates
 
-maxN = 8
-Niter = 10000
-Nexps = 500
+maxN = 5
+Niter = 100
+Nexps = 2
 θs = Vector(0.2:0.1:.9)
 
 data, dstatistics = gen_data(maxN, Niter, Nexps, θs)

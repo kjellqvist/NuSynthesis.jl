@@ -1,3 +1,5 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+GLPK = "60bf3e95-4087-53dc-ae20-288a0d20c6a6"
 NuSynthesis = "8224dbf6-1279-40d8-bcba-241bdeb1d633"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"

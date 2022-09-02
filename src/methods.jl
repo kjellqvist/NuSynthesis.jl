@@ -38,8 +38,6 @@ A = [1. 2.; 3. 4.]
 """
 function nubar_conv(A::Matrix{Float64}, optimizationfactory)
     n = size(A)[1]
-    #model = Model(Hypatia.Optimizer)
-    #model = Model(Mosek.Optimizer)
     model = Model(optimizationfactory)
     set_silent(model)
     @variable(model, l[1:n])

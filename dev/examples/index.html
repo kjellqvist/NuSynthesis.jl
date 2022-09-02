@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · NuSynthesis.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://kjellqvist.github.io/NuSynthesis.jl/examples/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../intro/">NuSynthesis.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../intro/">Home</a></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#2\\times-2-matrices"><span><span>$2\times 2$</span>-matrices</span></a></li><li><a class="tocitem" href="#Simulations"><span>Simulations</span></a></li></ul></li><li><a class="tocitem" href="../">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/kjellqvist/NuSynthesis.jl/blob/main/docs/src/examples.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Recrating-numerical-results"><a class="docs-heading-anchor" href="#Recrating-numerical-results">Recrating numerical results</a><a id="Recrating-numerical-results-1"></a><a class="docs-heading-anchor-permalink" href="#Recrating-numerical-results" title="Permalink"></a></h1><p>Here we show how to recreate the results from the article.</p><h2 id="2\\times-2-matrices"><a class="docs-heading-anchor" href="#2\\times-2-matrices"><span>$2\times 2$</span>-matrices</a><a id="2\\times-2-matrices-1"></a><a class="docs-heading-anchor-permalink" href="#2\\times-2-matrices" title="Permalink"></a></h2><p>This compares <span>$\\mu,\ \\nu$</span> and <span>$\\bar \\nu$</span> for <span>$2 \times 2$</span>-matrices.</p><pre><code class="language-julia hljs">using LinearAlgebra
+using Plots
+
+function nu(A::AbstractMatrix)
+    if maximum(diag(A)) == maximum(A)
+        return maximum(A)
+    end
+    w = A[2,1]
+    Anormalized = A / w
+
+    return w * det(Anormalized) / (sum(diag(Anormalized)) - 2)
+end
+nubar(A) = max(A[1,1], A[2,2], sqrt(A[1,2] * A[2,1]))
+spectralradius(A) = maximum(eigvals(A))
+
+N = 1000
+nubar_by_nu = zeros(N)
+mu_by_nu = zeros(N)
+for n=1:N
+    random_numbers = rand(3)
+    A = [random_numbers[1] random_numbers[2]; random_numbers[2] random_numbers[3]]
+    nubar_by_nu[n] = nubar(A) / nu(A)
+    mu_by_nu[n] = spectralradius(A) / nu(A)
+end
+
+p = scatter(nubar_by_nu, mu_by_nu)</code></pre><p><img src="../scatter.png" alt/></p><h2 id="Simulations"><a class="docs-heading-anchor" href="#Simulations">Simulations</a><a id="Simulations-1"></a><a class="docs-heading-anchor-permalink" href="#Simulations" title="Permalink"></a></h2><p>The simulations in the paper are run with the following parameters.</p><pre><code class="nohighlight hljs">    maxN = 8
+    Niter = 10000
+    Nexpsp = 500
+    θs = Vector(0.2:0.1:.9)</code></pre><p>The below code recreates the plots, but with a lighter set of parameters.</p><pre><code class="language-julia hljs">using NuSynthesis
+using GLPK
+using Plots
+Plots.scalefontsizes(2)
+
+maxN = 6
+Nas = 2 .^(1:maxN)
+Niter = 10000
+Nexps = 20
+θs = Vector(0.2:0.1:.9)
+data, dstatistics = gen_data(maxN, Niter, Nexps, θs, GLPK.Optimizer)
+
+tolerance = 1e-3
+p = plot(yaxis = &quot;N&quot;, legend = :bottomright, color_palette = palette(:Blues_9), size = (600, 400))
+
+plot!(p)
+
+for θ ∈ θs[1:end]
+    plot!(p, Nas, (Na) -&gt; first_until_tol(Na, θ, tolerance, dstatistics),
+    label = false, xaxis = &quot;Na&quot;, linewidth = 2, marker = :x, markersize = 5)
+end
+savefig(p, &quot;fix_tol.png&quot;)
+
+Na = 2^maxN
+p = plot(yaxis = &quot;N&quot;, xaxis = &quot;tolerance&quot;, color_palette = palette(:Blues_9), size = (600, 400))
+plot!(p, xaxis = :log, yaxis = :log, xflip = true, legend = :topleft)
+
+for θ ∈ θs[1:end]
+    plot!(p, 10 .^(1 .- (0:0.01:4)), (tolerance) -&gt; first_until_tol(Na, θ, tolerance, dstatistics),
+    label = false,  linewidth = 2)
+end
+p</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌ Info: running experiments with
+│   maxN = 6
+│   Niter = 10000
+│   Nexps = 20
+└   θs = 8-element Vector{Float64}: …
+┌ Info: Starting experiments with
+└   Na = 2
+ 15.409205 seconds (58.33 M allocations: 3.076 GiB, 7.67% gc time, 63.24% compilation time)
+┌ Info: Starting experiments with
+└   Na = 4
+  7.378856 seconds (46.44 M allocations: 3.268 GiB, 15.65% gc time)
+┌ Info: Starting experiments with
+└   Na = 8
+ 10.229637 seconds (46.46 M allocations: 6.750 GiB, 16.09% gc time)
+┌ Info: Starting experiments with
+└   Na = 16
+ 29.112062 seconds (46.55 M allocations: 19.249 GiB, 21.53% gc time)
+┌ Info: Starting experiments with
+└   Na = 32
+ 39.874655 seconds (46.89 M allocations: 66.954 GiB, 10.19% gc time)
+┌ Info: Starting experiments with
+└   Na = 64
+120.268843 seconds (56.25 M allocations: 253.081 GiB, 7.31% gc time, 0.00% compilation time)</code></pre><p><img src="../fix_tol.png" alt/> <img src="../fix_Na.png" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../intro/">« Home</a><a class="docs-footer-nextpage" href="../">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Friday 2 September 2022 11:06">Friday 2 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,3 +1,4 @@
+using Plots
 using LinearAlgebra
 
 function nu(A::AbstractMatrix)

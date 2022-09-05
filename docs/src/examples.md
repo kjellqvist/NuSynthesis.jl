@@ -2,7 +2,7 @@
 
 Here we show how to recreate the results from the article.
 ## ``2\times 2``-matrices
-This compares ``\\mu,\ \\nu`` and ``\\bar \\nu`` for ``2 \times 2``-matrices.
+This compares ``\mu,\ \nu`` and ``\bar \nu`` for ``2 \times 2``-matrices.
 ```@example
 using LinearAlgebra
 using Plots
